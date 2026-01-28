@@ -319,15 +319,14 @@ public:
 
                         if (OnPlayerJoined) OnPlayerJoined(slot);
 
-                        // Check if both players connected
-                        if (peers[0] && peers[1]) {
-                            // Start game
-                            char startData[1] = { static_cast<char>(NetPacketType::GAME_START) };
-                            for (int i = 0; i < 2; i++) {
-                                ENetPacket* startPacket = enet_packet_create(startData, 1, ENET_PACKET_FLAG_RELIABLE);
-                                enet_peer_send(peers[i], 0, startPacket);
-                            }
-                            if (OnGameStart) OnGameStart();
+                        // Start game immediately for this player (no 2-player requirement)
+                        char startData[1] = { static_cast<char>(NetPacketType::GAME_START) };
+                        ENetPacket* startPacket = enet_packet_create(startData, 1, ENET_PACKET_FLAG_RELIABLE);
+                        enet_peer_send(event.peer, 0, startPacket);
+
+                        // Trigger OnGameStart callback if this is the first player
+                        if (slot == 0 && OnGameStart) {
+                            OnGameStart();
                         }
                     } else {
                         // Server full, disconnect

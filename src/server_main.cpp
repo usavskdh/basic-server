@@ -1,6 +1,6 @@
-// Standalone dedicated server for 1v1 combat
+// Standalone dedicated server for combat arena
 // Run this on Raspberry Pi or any Linux/Windows machine
-// Then connect with 2 game clients
+// Game starts immediately when first player connects
 
 // Server doesn't need GLFW - no graphics, no input
 #include "input_state.hpp"
@@ -40,7 +40,7 @@ int main() {
     };
 
     server.OnGameStart = [&]() {
-        std::cout << "Both players connected! Starting match..." << std::endl;
+        std::cout << "Player connected! Starting match..." << std::endl;
         gameStarted = true;
         gameState.ResetMatch();
     };
